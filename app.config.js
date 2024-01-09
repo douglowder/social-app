@@ -96,17 +96,12 @@ module.exports = function () {
           },
         ],
       },
-      web: {
-        favicon: './assets/favicon.png',
-      },
       updates: {
         enabled: true,
         fallbackToCacheTimeout: 1000,
         url: 'https://u.expo.dev/55bd077a-d905-4184-9c7f-94789ba0f302',
       },
       plugins: [
-        'expo-localization',
-        Boolean(process.env.SENTRY_AUTH_TOKEN) && 'sentry-expo',
         [
           'expo-build-properties',
           {
@@ -126,29 +121,12 @@ module.exports = function () {
           {
             username: 'blueskysocial',
           },
-        ],
-        './plugins/withAndroidManifestPlugin.js',
-      ].filter(Boolean),
+        ]
+      ],
       extra: {
         eas: {
           projectId: '55bd077a-d905-4184-9c7f-94789ba0f302',
         },
-      },
-      hooks: {
-        postPublish: [
-          /*
-           * @see https://docs.expo.dev/guides/using-sentry/#app-configuration
-           */
-          {
-            file: 'sentry-expo/upload-sourcemaps',
-            config: {
-              organization: 'blueskyweb',
-              project: 'react-native',
-              release: VERSION,
-              dist: `${PLATFORM}.${VERSION}.${DIST_BUILD_NUMBER}`,
-            },
-          },
-        ],
       },
     },
   }

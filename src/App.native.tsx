@@ -10,7 +10,6 @@ import {
   initialWindowMetrics,
   SafeAreaProvider,
 } from 'react-native-safe-area-context'
-import * as SplashScreen from 'expo-splash-screen'
 import {msg} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
 
@@ -63,14 +62,11 @@ import {Shell} from '#/view/shell'
 import {ThemeProvider as Alf} from '#/alf'
 import {useColorModeTheme} from '#/alf/util/useColorModeTheme'
 import {NuxDialogs} from '#/components/dialogs/nuxs'
-import {useStarterPackEntry} from '#/components/hooks/useStarterPackEntry'
+// import {useStarterPackEntry} from '#/components/hooks/useStarterPackEntry'
 import {Provider as IntentDialogProvider} from '#/components/intents/IntentDialogs'
 import {Provider as PortalProvider} from '#/components/Portal'
-import {Splash} from '#/Splash'
 import {BottomSheetProvider} from '../modules/bottom-sheet'
 import {BackgroundNotificationPreferencesProvider} from '../modules/expo-background-notification-handler/src/BackgroundNotificationHandlerProvider'
-
-SplashScreen.preventAutoHideAsync()
 
 /**
  * Begin geolocation ASAP
@@ -78,13 +74,13 @@ SplashScreen.preventAutoHideAsync()
 beginResolveGeolocation()
 
 function InnerApp() {
-  const [isReady, setIsReady] = React.useState(false)
+  // const [isReady, setIsReady] = React.useState(false)
   const {currentAccount} = useSession()
   const {resumeSession} = useSessionApi()
   const theme = useColorModeTheme()
   const {_} = useLingui()
 
-  const hasCheckedReferrer = useStarterPackEntry()
+  // const hasCheckedReferrer = useStarterPackEntry()
 
   // init
   useEffect(() => {
@@ -99,7 +95,7 @@ function InnerApp() {
       } catch (e) {
         logger.error(`session: resume failed`, {message: e})
       } finally {
-        setIsReady(true)
+        // setIsReady(true)
       }
     }
     const account = readLastActiveAccount()
@@ -118,49 +114,47 @@ function InnerApp() {
   return (
     <Alf theme={theme}>
       <ThemeProvider theme={theme}>
-        <Splash isReady={isReady && hasCheckedReferrer}>
-          <RootSiblingParent>
-            <VideoVolumeProvider>
-              <React.Fragment
-                // Resets the entire tree below when it changes:
-                key={currentAccount?.did}>
-                <QueryProvider currentDid={currentAccount?.did}>
-                  <ComposerProvider>
-                    <StatsigProvider>
-                      <MessagesProvider>
-                        {/* LabelDefsProvider MUST come before ModerationOptsProvider */}
-                        <LabelDefsProvider>
-                          <ModerationOptsProvider>
-                            <LoggedOutViewProvider>
-                              <SelectedFeedProvider>
-                                <HiddenRepliesProvider>
-                                  <UnreadNotifsProvider>
-                                    <BackgroundNotificationPreferencesProvider>
-                                      <MutedThreadsProvider>
-                                        <ProgressGuideProvider>
-                                          <GestureHandlerRootView
-                                            style={s.h100pct}>
-                                            <TestCtrls />
-                                            <Shell />
-                                            <NuxDialogs />
-                                          </GestureHandlerRootView>
-                                        </ProgressGuideProvider>
-                                      </MutedThreadsProvider>
-                                    </BackgroundNotificationPreferencesProvider>
-                                  </UnreadNotifsProvider>
-                                </HiddenRepliesProvider>
-                              </SelectedFeedProvider>
-                            </LoggedOutViewProvider>
-                          </ModerationOptsProvider>
-                        </LabelDefsProvider>
-                      </MessagesProvider>
-                    </StatsigProvider>
-                  </ComposerProvider>
-                </QueryProvider>
-              </React.Fragment>
-            </VideoVolumeProvider>
-          </RootSiblingParent>
-        </Splash>
+        <RootSiblingParent>
+          <VideoVolumeProvider>
+            <React.Fragment
+              // Resets the entire tree below when it changes:
+              key={currentAccount?.did}>
+              <QueryProvider currentDid={currentAccount?.did}>
+                <ComposerProvider>
+                  <StatsigProvider>
+                    <MessagesProvider>
+                      {/* LabelDefsProvider MUST come before ModerationOptsProvider */}
+                      <LabelDefsProvider>
+                        <ModerationOptsProvider>
+                          <LoggedOutViewProvider>
+                            <SelectedFeedProvider>
+                              <HiddenRepliesProvider>
+                                <UnreadNotifsProvider>
+                                  <BackgroundNotificationPreferencesProvider>
+                                    <MutedThreadsProvider>
+                                      <ProgressGuideProvider>
+                                        <GestureHandlerRootView
+                                          style={s.h100pct}>
+                                          <TestCtrls />
+                                          <Shell />
+                                          <NuxDialogs />
+                                        </GestureHandlerRootView>
+                                      </ProgressGuideProvider>
+                                    </MutedThreadsProvider>
+                                  </BackgroundNotificationPreferencesProvider>
+                                </UnreadNotifsProvider>
+                              </HiddenRepliesProvider>
+                            </SelectedFeedProvider>
+                          </LoggedOutViewProvider>
+                        </ModerationOptsProvider>
+                      </LabelDefsProvider>
+                    </MessagesProvider>
+                  </StatsigProvider>
+                </ComposerProvider>
+              </QueryProvider>
+            </React.Fragment>
+          </VideoVolumeProvider>
+        </RootSiblingParent>
       </ThemeProvider>
     </Alf>
   )

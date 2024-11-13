@@ -12,15 +12,17 @@ class SheetViewController: UIViewController {
   init() {
     super.init(nibName: nil, bundle: nil)
 
-    self.modalPresentationStyle = .formSheet
     self.isModalInPresentation = false
 
+    #if os(iOS)
     if let sheet = self.sheetPresentationController {
       sheet.prefersGrabberVisible = false
     }
+    #endif
   }
 
   func setDetents(contentHeight: CGFloat, preventExpansion: Bool) {
+    #if os(iOS)
     guard let sheet = self.sheetPresentationController,
           let screenHeight = Util.getScreenHeight()
     else {
@@ -60,9 +62,11 @@ class SheetViewController: UIViewController {
         sheet.selectedDetentIdentifier = .medium
       }
     }
+    #endif
   }
 
   func updateDetents(contentHeight: CGFloat, preventExpansion: Bool) {
+    #if os(iOS)
     if let sheet = self.sheetPresentationController {
       // Capture `self` weakly to prevent retain cycles.
       // Also, capture `sheet` weakly to avoid potential strong references held by animateChanges.
@@ -74,14 +78,17 @@ class SheetViewController: UIViewController {
           }
       }
     }
+    #endif
   }
 
+  #if os(iOS)
   func getCurrentDetentIdentifier() -> UISheetPresentationController.Detent.Identifier? {
     guard let sheet = self.sheetPresentationController else {
       return nil
     }
     return sheet.selectedDetentIdentifier
   }
+  #endif
 
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")

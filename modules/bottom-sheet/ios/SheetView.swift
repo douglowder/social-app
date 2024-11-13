@@ -1,6 +1,7 @@
 import ExpoModulesCore
 import UIKit
 
+#if os(iOS)
 class SheetView: ExpoView, UISheetPresentationControllerDelegate {
   // Views
   private var sheetVc: SheetViewController?
@@ -190,3 +191,14 @@ class SheetView: ExpoView, UISheetPresentationControllerDelegate {
     self.selectedDetentIdentifier = sheetPresentationController.selectedDetentIdentifier
   }
 }
+#else
+class SheetView: ExpoView {
+  func dismiss() {}
+  func updateLayout() {}
+  var cornerRadius: CGFloat = 0
+  var minHeight: Double = 0
+  var maxHeight: Double = 0
+  var preventDismiss: Bool = false
+  var preventExpansion: Bool = false
+}
+#endif

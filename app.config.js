@@ -188,6 +188,7 @@ module.exports = function (config) {
         channel: UPDATES_CHANNEL,
       },
       plugins: [
+        '@react-native-tvos/config-tv',
         'expo-localization',
         USE_SENTRY && [
           '@sentry/react-native/expo',

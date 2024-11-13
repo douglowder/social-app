@@ -230,7 +230,7 @@ module.exports = function (config) {
         './plugins/withAndroidStylesWindowBackgroundPlugin.js',
         './plugins/withAndroidStylesAccentColorPlugin.js',
         './plugins/withAndroidSplashScreenStatusBarTranslucentPlugin.js',
-        './plugins/shareExtension/withShareExtensions.js',
+        // './plugins/shareExtension/withShareExtensions.js',
         // './plugins/notificationsExtension/withNotificationsExtension.js',
         './plugins/withAppDelegateReferrer.js',
         [
@@ -256,6 +256,7 @@ module.exports = function (config) {
             experimental: {
               ios: {
                 appExtensions: [
+                  /*
                   {
                     targetName: 'Share-with-Bluesky',
                     bundleIdentifier: 'xyz.blueskyweb.app.Share-with-Bluesky',
@@ -274,10 +275,11 @@ module.exports = function (config) {
                       ],
                     },
                   },
-                  // {
-                  //   targetName: 'BlueskyClip',
-                  //   bundleIdentifier: 'xyz.blueskyweb.app.AppClip',
-                  // },
+                  {
+                    targetName: 'BlueskyClip',
+                    bundleIdentifier: 'xyz.blueskyweb.app.AppClip',
+                  },
+                   */
                 ],
               },
             },

@@ -1,0 +1,32 @@
+diff --git a/node_modules/@haileyok/bluesky-video/ios/VideoView.swift b/node_modules/@haileyok/bluesky-video/ios/VideoView.swift
+index 2236cc9..3b2c941 100644
+--- a/node_modules/@haileyok/bluesky-video/ios/VideoView.swift
++++ b/node_modules/@haileyok/bluesky-video/ios/VideoView.swift
+@@ -116,9 +116,11 @@ class VideoView: ExpoView, AVPlayerViewControllerDelegate {
+     pViewController.showsPlaybackControls = false
+     pViewController.delegate = self
+     pViewController.videoGravity = .resizeAspectFill
++    #if os(iOS)
+     if #available(iOS 16.0, *) {
+       pViewController.allowsVideoFrameAnalysis = false
+     }
++    #endif
+ 
+     // Recycle the current player if there is one
+     if let currentPlayer = self.player {
+@@ -276,6 +278,7 @@ class VideoView: ExpoView, AVPlayerViewControllerDelegate {
+ 
+   // MARK: - AVPlayerViewControllerDelegate
+ 
++  #if os(iOS)
+   func playerViewController(_ playerViewController: AVPlayerViewController,
+                             willEndFullScreenPresentationWithAnimationCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+     coordinator.animate(alongsideTransition: nil) { context in
+@@ -293,6 +296,7 @@ class VideoView: ExpoView, AVPlayerViewControllerDelegate {
+       }
+     }
+   }
++  #endif
+ 
+   // MARK: - visibility
+ 

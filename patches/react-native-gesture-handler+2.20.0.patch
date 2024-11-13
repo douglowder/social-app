@@ -1,0 +1,26 @@
+diff --git a/node_modules/react-native-gesture-handler/RNGestureHandler.podspec b/node_modules/react-native-gesture-handler/RNGestureHandler.podspec
+index c909f5e..e521a20 100644
+--- a/node_modules/react-native-gesture-handler/RNGestureHandler.podspec
++++ b/node_modules/react-native-gesture-handler/RNGestureHandler.podspec
+@@ -12,6 +12,7 @@ Pod::Spec.new do |s|
+   s.author       = { package["author"]["name"] => package["author"]["email"] }
+   s.source       = { :git => "https://github.com/software-mansion/react-native-gesture-handler", :tag => "#{s.version}" }
+   s.source_files = "apple/**/*.{h,m,mm}"
++  s.tvos.exclude_files = "apple/Handlers/RNPanHandler.*"
+   s.requires_arc = true
+   s.platforms       = { ios: '11.0', tvos: '11.0', osx: '10.15', visionos: '1.0' }
+ 
+diff --git a/node_modules/react-native-gesture-handler/apple/RNGestureHandlerManager.mm b/node_modules/react-native-gesture-handler/apple/RNGestureHandlerManager.mm
+index 7983c49..3a581a6 100644
+--- a/node_modules/react-native-gesture-handler/apple/RNGestureHandlerManager.mm
++++ b/node_modules/react-native-gesture-handler/apple/RNGestureHandlerManager.mm
+@@ -30,7 +30,9 @@
+ #import "Handlers/RNLongPressHandler.h"
+ #import "Handlers/RNManualHandler.h"
+ #import "Handlers/RNNativeViewHandler.h"
++#if !TARGET_OS_TV
+ #import "Handlers/RNPanHandler.h"
++#endif
+ #import "Handlers/RNPinchHandler.h"
+ #import "Handlers/RNRotationHandler.h"
+ #import "Handlers/RNTapHandler.h"

@@ -10,7 +10,9 @@ class ExpoScrollForwarderView: ExpoView, UIGestureRecognizerDelegate {
   }
 
   private var rctScrollView: RCTScrollView?
+  #if os(iOS)
   private var rctRefreshCtrl: RCTRefreshControl?
+  #endif
   private var cancelGestureRecognizers: [UIGestureRecognizer]?
   private var animTimer: Timer?
   private var initialOffset: CGFloat = 0.0
@@ -85,22 +87,26 @@ class ExpoScrollForwarderView: ExpoView, UIGestureRecognizerDelegate {
     if sender.state == .changed {
       sv.contentOffset.y = self.dampenOffset(-translation + self.initialOffset)
 
+      #if os(iOS)
       if sv.contentOffset.y <= -130, !didImpact {
         let generator = UIImpactFeedbackGenerator(style: .light)
         generator.impactOccurred()
 
         self.didImpact = true
       }
+      #endif
     }
 
     if sender.state == .ended {
       let velocity = sender.velocity(in: self).y
       self.didImpact = false
 
+      #if os(iOS)
       if sv.contentOffset.y <= -130 {
         self.rctRefreshCtrl?.forwarderBeginRefreshing()
         return
       }
+      #endif
 
       // A check for a velocity under 250 prevents animations from occurring when they wouldn't in a normal
       // scroll view
@@ -172,8 +178,9 @@ class ExpoScrollForwarderView: ExpoView, UIGestureRecognizerDelegate {
 
     self.rctScrollView = self.appContext?
       .findView(withTag: scrollViewTag, ofType: RCTScrollView.self)
+    #if os(iOS)
     self.rctRefreshCtrl = self.rctScrollView?.scrollView.refreshControl as? RCTRefreshControl
-
+    #endif
     self.addCancelGestureRecognizers()
   }
 

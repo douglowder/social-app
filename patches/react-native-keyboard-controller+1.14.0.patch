@@ -1,0 +1,87 @@
+diff --git a/node_modules/react-native-keyboard-controller/ios/observers/FocusedInputObserver.swift b/node_modules/react-native-keyboard-controller/ios/observers/FocusedInputObserver.swift
+index 23ef057..1c005ab 100644
+--- a/node_modules/react-native-keyboard-controller/ios/observers/FocusedInputObserver.swift
++++ b/node_modules/react-native-keyboard-controller/ios/observers/FocusedInputObserver.swift
+@@ -74,6 +74,7 @@ public class FocusedInputObserver: NSObject {
+ 
+     isMounted = true
+ 
++    #if os(iOS)
+     NotificationCenter.default.addObserver(
+       self,
+       selector: #selector(keyboardWillShow),
+@@ -86,6 +87,7 @@ public class FocusedInputObserver: NSObject {
+       name: UIResponder.keyboardWillHideNotification,
+       object: nil
+     )
++    #endif
+   }
+ 
+   @objc public func unmount() {
+diff --git a/node_modules/react-native-keyboard-controller/ios/observers/KeyboardMovementObserver.swift b/node_modules/react-native-keyboard-controller/ios/observers/KeyboardMovementObserver.swift
+index 9ae7bdb..57c86a5 100644
+--- a/node_modules/react-native-keyboard-controller/ios/observers/KeyboardMovementObserver.swift
++++ b/node_modules/react-native-keyboard-controller/ios/observers/KeyboardMovementObserver.swift
+@@ -61,6 +61,7 @@ public class KeyboardMovementObserver: NSObject {
+ 
+     isMounted = true
+ 
++    #if os(iOS)
+     NotificationCenter.default.addObserver(
+       self,
+       selector: #selector(keyboardWillDisappear),
+@@ -85,6 +86,7 @@ public class KeyboardMovementObserver: NSObject {
+       name: UIResponder.keyboardDidHideNotification,
+       object: nil
+     )
++    #endif
+   }
+ 
+   private func setupKVObserver() {
+@@ -311,12 +313,17 @@ public class KeyboardMovementObserver: NSObject {
+   }
+ 
+   private func metaDataFromNotification(_ notification: Notification) -> (Int, NSValue?) {
++    #if os(tvOS)
++    return (1000, nil)
++    #else
+     let duration = Int(
+       (notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double ?? 0) * 1000
+     )
+     let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue
+ 
++
+     return (duration, keyboardFrame)
++    #endif
+   }
+ 
+   private func getEventParams(_ height: Double, _ duration: Int) -> [AnyHashable: Any] {
+diff --git a/node_modules/react-native-keyboard-controller/ios/traversal/ViewHierarchyNavigator.swift b/node_modules/react-native-keyboard-controller/ios/traversal/ViewHierarchyNavigator.swift
+index 46f0b1d..52a6904 100644
+--- a/node_modules/react-native-keyboard-controller/ios/traversal/ViewHierarchyNavigator.swift
++++ b/node_modules/react-native-keyboard-controller/ios/traversal/ViewHierarchyNavigator.swift
+@@ -107,9 +107,11 @@ public class ViewHierarchyNavigator: NSObject {
+       return textField
+     }
+ 
++    #if os(iOS)
+     if let textView = view as? UITextView, textView.isEditable {
+       return textView
+     }
++    #endif
+ 
+     return nil
+   }
+diff --git a/node_modules/react-native-keyboard-controller/react-native-keyboard-controller.podspec b/node_modules/react-native-keyboard-controller/react-native-keyboard-controller.podspec
+index 8729a0b..755a746 100644
+--- a/node_modules/react-native-keyboard-controller/react-native-keyboard-controller.podspec
++++ b/node_modules/react-native-keyboard-controller/react-native-keyboard-controller.podspec
+@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
+   s.license      = package["license"]
+   s.authors      = package["author"]
+ 
+-  s.platforms    = { :ios => "11.0" }
++  s.platforms    = { :ios => "11.0", :tvos => "13.4" }
+   s.source       = { :git => "https://github.com/kirillzyusko/react-native-keyboard-controller.git", :tag => "#{s.version}" }
+ 
+   s.source_files = "ios/**/*.{h,m,mm,swift}"

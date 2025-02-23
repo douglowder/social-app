@@ -13,12 +13,36 @@ module.exports = {
     'react',
     'lingui',
     'simple-import-sort',
+    'bsky-internal',
     'eslint-plugin-react-compiler',
   ],
   rules: {
     'react/no-unescaped-entities': 0,
     'react/prop-types': 0,
     'react-native/no-inline-styles': 0,
+    'bsky-internal/avoid-unwrapped-text': [
+      'error',
+      {
+        impliedTextComponents: [
+          'H1',
+          'H2',
+          'H3',
+          'H4',
+          'H5',
+          'H6',
+          'P',
+          'Admonition',
+        ],
+        impliedTextProps: [],
+        suggestedTextWrappers: {
+          Button: 'ButtonText',
+          'ToggleButton.Button': 'ToggleButton.ButtonText',
+        },
+      },
+    ],
+    'bsky-internal/use-exact-imports': 'error',
+    'bsky-internal/use-typed-gates': 'error',
+    'bsky-internal/use-prefixed-imports': 'error',
     'simple-import-sort/imports': [
       'error',
       {

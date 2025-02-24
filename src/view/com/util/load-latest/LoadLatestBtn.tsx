@@ -12,7 +12,7 @@ import {useWebMediaQueries} from '#/lib/hooks/useWebMediaQueries'
 import {clamp} from '#/lib/numbers'
 import {useGate} from '#/lib/statsig/statsig'
 import {colors} from '#/lib/styles'
-import {isWeb} from '#/platform/detection'
+import {isNativeTablet, isWeb} from '#/platform/detection'
 import {useSession} from '#/state/session'
 import {useLayoutBreakpoints} from '#/alf'
 
@@ -58,6 +58,7 @@ export function LoadLatestBtn({
               ? styles.loadLatestOutOfLine
               : styles.loadLatestInline),
           isTablet &&
+            !isNativeTablet &&
             (centerColumnOffset
               ? styles.loadLatestInlineOffset
               : styles.loadLatestInline),
@@ -90,18 +91,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  loadLatestInline: {
-    // @ts-expect-error web only
-    left: 'calc(50vw - 282px)',
-  },
-  loadLatestInlineOffset: {
-    // @ts-expect-error web only
-    left: 'calc(50vw - 432px)',
-  },
-  loadLatestOutOfLine: {
-    // @ts-expect-error web only
-    left: 'calc(50vw - 382px)',
-  },
+  // @ts-expect-error web only
+  loadLatestInline: isWeb
+    ? {
+        left: 'calc(50vw - 282px)',
+      }
+    : {},
+  // @ts-expect-error web only
+  loadLatestInlineOffset: isWeb
+    ? {
+        left: 'calc(50vw - 432px)',
+      }
+    : {},
+  // @ts-expect-error web only
+  loadLatestOutOfLine: isWeb
+    ? {
+        left: 'calc(50vw - 382px)',
+      }
+    : {},
   indicator: {
     position: 'absolute',
     top: 3,

@@ -35,7 +35,7 @@ import {
 import {sanitizeDisplayName} from '#/lib/strings/display-names'
 import {augmentSearchQuery} from '#/lib/strings/helpers'
 import {languageName} from '#/locale/helpers'
-import {isNative, isWeb} from '#/platform/detection'
+import {isNative, isNativeTablet, isWeb} from '#/platform/detection'
 import {listenSoftReset} from '#/state/events'
 import {useLanguagePrefs} from '#/state/preferences/languages'
 import {useModerationOpts} from '#/state/preferences/moderation-opts'
@@ -342,19 +342,19 @@ function SearchLanguageDropdown({
         value: l.code2,
         key: l.code2 + l.code3,
       }))
-      .sort((a, b) => {
+      .sort((a2, b) => {
         // prioritize user's languages
-        const aIsUser = contentLanguages.includes(a.value)
+        const aIsUser = contentLanguages.includes(a2.value)
         const bIsUser = contentLanguages.includes(b.value)
         if (aIsUser && !bIsUser) return -1
         if (bIsUser && !aIsUser) return 1
         // prioritize "common" langs in the network
-        const aIsCommon = !!APP_LANGUAGES.find(al => al.code2 === a.value)
+        const aIsCommon = !!APP_LANGUAGES.find(al => al.code2 === a2.value)
         const bIsCommon = !!APP_LANGUAGES.find(al => al.code2 === b.value)
         if (aIsCommon && !bIsCommon) return -1
         if (bIsCommon && !aIsCommon) return 1
         // fall back to alphabetical
-        return a.label.localeCompare(b.label)
+        return a2.label.localeCompare(b.label)
       })
   }, [appLanguage, contentLanguages])
 
@@ -811,7 +811,7 @@ export function SearchScreenShell({
     }
   }, [setShowAutocomplete])
 
-  const showHeader = !gtMobile || navButton !== 'menu'
+  const showHeader = (!gtMobile && !isNativeTablet) || navButton !== 'menu'
 
   return (
     <Layout.Screen testID={testID}>

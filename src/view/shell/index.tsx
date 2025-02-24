@@ -11,7 +11,7 @@ import {useIntentHandler} from '#/lib/hooks/useIntentHandler'
 import {useNotificationsHandler} from '#/lib/hooks/useNotificationHandler'
 import {useNotificationsRegistration} from '#/lib/notifications/notifications'
 import {isStateAtTabRoot} from '#/lib/routes/helpers'
-import {isAndroid, isIOS} from '#/platform/detection'
+import {isAndroid, isIOS, isNativeTablet} from '#/platform/detection'
 import {useDialogStateControlContext} from '#/state/dialogs'
 import {useSession} from '#/state/session'
 import {
@@ -99,53 +99,55 @@ function ShellInner() {
       <View style={[a.h_full]}>
         <ErrorBoundary
           style={{paddingTop: insets.top, paddingBottom: insets.bottom}}>
-          <Drawer
-            renderDrawerContent={renderDrawerContent}
-            drawerStyle={{width: Math.min(400, winDim.width * 0.8)}}
-            configureGestureHandler={handler => {
-              handler = handler.requireExternalGestureToFail(
-                trendingScrollGesture,
-              )
+          {!isNativeTablet && (
+            <Drawer
+              renderDrawerContent={renderDrawerContent}
+              drawerStyle={{width: Math.min(400, winDim.width * 0.8)}}
+              configureGestureHandler={handler => {
+                handler = handler.requireExternalGestureToFail(
+                  trendingScrollGesture,
+                )
 
-              if (swipeEnabled) {
-                if (isDrawerOpen) {
-                  return handler.activeOffsetX([-1, 1])
+                if (swipeEnabled) {
+                  if (isDrawerOpen) {
+                    return handler.activeOffsetX([-1, 1])
+                  } else {
+                    return (
+                      handler
+                        // Any movement to the left is a pager swipe
+                        // so fail the drawer gesture immediately.
+                        .failOffsetX(-1)
+                        // Don't rush declaring that a movement to the right
+                        // is a drawer swipe. It could be a vertical scroll.
+                        .activeOffsetX(5)
+                    )
+                  }
                 } else {
-                  return (
-                    handler
-                      // Any movement to the left is a pager swipe
-                      // so fail the drawer gesture immediately.
-                      .failOffsetX(-1)
-                      // Don't rush declaring that a movement to the right
-                      // is a drawer swipe. It could be a vertical scroll.
-                      .activeOffsetX(5)
-                  )
+                  // Fail the gesture immediately.
+                  // This seems more reliable than the `swipeEnabled` prop.
+                  // With `swipeEnabled` alone, the gesture may freeze after toggling off/on.
+                  return handler.failOffsetX([0, 0]).failOffsetY([0, 0])
                 }
-              } else {
-                // Fail the gesture immediately.
-                // This seems more reliable than the `swipeEnabled` prop.
-                // With `swipeEnabled` alone, the gesture may freeze after toggling off/on.
-                return handler.failOffsetX([0, 0]).failOffsetY([0, 0])
-              }
-            }}
-            open={isDrawerOpen}
-            onOpen={onOpenDrawer}
-            onClose={onCloseDrawer}
-            swipeEdgeWidth={winDim.width}
-            swipeMinVelocity={100}
-            swipeMinDistance={10}
-            drawerType={isIOS ? 'slide' : 'front'}
-            overlayStyle={{
-              backgroundColor: select(t.name, {
-                light: 'rgba(0, 57, 117, 0.1)',
-                dark: isAndroid
-                  ? 'rgba(16, 133, 254, 0.1)'
-                  : 'rgba(1, 82, 168, 0.1)',
-                dim: 'rgba(10, 13, 16, 0.8)',
-              }),
-            }}>
-            <TabsNavigator />
-          </Drawer>
+              }}
+              open={isDrawerOpen}
+              onOpen={onOpenDrawer}
+              onClose={onCloseDrawer}
+              swipeEdgeWidth={winDim.width}
+              swipeMinVelocity={100}
+              swipeMinDistance={10}
+              drawerType={isIOS ? 'slide' : 'front'}
+              overlayStyle={{
+                backgroundColor: select(t.name, {
+                  light: 'rgba(0, 57, 117, 0.1)',
+                  dark: isAndroid
+                    ? 'rgba(16, 133, 254, 0.1)'
+                    : 'rgba(1, 82, 168, 0.1)',
+                  dim: 'rgba(10, 13, 16, 0.8)',
+                }),
+              }}>
+              <TabsNavigator />
+            </Drawer>
+          )}
         </ErrorBoundary>
       </View>
       <Composer winHeight={winDim.height} />

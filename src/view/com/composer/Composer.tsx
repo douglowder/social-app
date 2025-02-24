@@ -72,7 +72,13 @@ import {logEvent} from '#/lib/statsig/statsig'
 import {cleanError} from '#/lib/strings/errors'
 import {colors, s} from '#/lib/styles'
 import {logger} from '#/logger'
-import {isAndroid, isIOS, isNative, isWeb} from '#/platform/detection'
+import {
+  isAndroid,
+  isIOS,
+  isNative,
+  isNativeTablet,
+  isWeb,
+} from '#/platform/detection'
 import {useDialogStateControlContext} from '#/state/dialogs'
 import {emitPostCreated} from '#/state/events'
 import {ComposerImage, pasteImage} from '#/state/gallery'
@@ -1236,7 +1242,7 @@ function ComposerFooter({
               onAdd={onImageAdd}
             />
             <SelectGifBtn onSelectGif={onSelectGif} disabled={!!media} />
-            {!isMobile ? (
+            {!isMobile && !isNativeTablet ? (
               <Button
                 onPress={onEmojiButtonPress}
                 style={a.p_sm}
@@ -1468,7 +1474,7 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
   stickyFooterWeb: {
-    // @ts-ignore web-only
+    // @ts-expect-error web-only
     position: 'sticky',
     bottom: 0,
   },
